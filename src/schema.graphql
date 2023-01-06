@@ -46,7 +46,11 @@ type output {
   status: Int
   message: String
 }
+type purchaseOutput {
+  success: Boolean
+}
 extend type Mutation {
+  purchaseProperty(productId: String): purchaseOutput
   deleteAccount(userId: String!): deleteOutput
   updateUserPassword(input: updatePassword): updatePasswordOutPut
   updateAccountpayBookEntry(input:accountBookInput):AccountBook
@@ -54,24 +58,116 @@ extend type Mutation {
   addProductVieworCart(input: VieworCartInput): output
 }
 
-
+type previousOwners{
+  userId: String
+  userName: String
+}
+type priceHistory {
+  price: String
+  date: String
+}
+type investmentDetails {
+  description: String
+  landValue: String
+  developmentValue: String
+  agency: String
+  legal: String
+  totalCost: String
+  unitPrice: String
+}
+type location {
+  country: String
+  state: String
+  location: String
+}
+type documents {
+  url: String
+}
+type propertySaleType {
+  "property type"
+  type: String
+}
+type area {
+  unit: String
+  price: Float
+  value: Float
+}
+type currentOwner {
+  userId: String
+  userName: String
+}
 extend type Product {
-  uploadedBy: uploadedBy
+  "uploadedBy: uploadedBy"
+  currentOwner: currentOwner
+  ownerShip: String
+  propertyType: String
+  documents: [documents]
+  investmentDetails: investmentDetails
+  priceHistory: [priceHistory]
+  propertySaleType: propertySaleType
+  previousOwners: [previousOwners]
   upVotes: Int
+  area: area
   productViews: Int
   totalCarts: Int
   ancestorId:ID
-   parentId:ID
+  parentId:ID
+  location: location
+}
+
+input documentsInput {
+  url: String
+}
+
+input areaInput {
+  unit: String
+  price:Float
+  value: Float
+}
+
+input investmentDetailsInput {
+  description: String
+  landValue: String
+  developmentValue: String
+  agency: String
+  legal: String
+  totalCost: String
+  unitPrice: String
+}
+input propertySaleTypeInput {
+  "property type"
+  type: String
+}
+input locationInput {
+  country: String
+  state: String
+  location: String
 }
 extend input ProductInput {
-  uploadedBy: uploadedByinput
+  "uploadedBy: uploadedByinput"
+  propertyType: String
+  investmentDetails: investmentDetailsInput
+  propertySaleType: propertySaleTypeInput
+  location: locationInput
   upVotes: Int
-  productViews: Int
-  totalCarts: Int
+  area: areaInput
+  documents: [documentsInput]
+  ancestorId:ID
+  parentId:ID
 }
 
 extend type CatalogProduct {
-  uploadedBy: uploadedBy
+  "uploadedBy: uploadedBy"
+  currentOwner: currentOwner
+  ownerShip: String
+  area: area
+  propertyType: String
+  investmentDetails: investmentDetails
+  priceHistory: [priceHistory]
+  documents: [documents]
+  propertySaleType: propertySaleType
+  previousOwners: [previousOwners]
+  location: location
   upVotes: Int
   ancestorId:ID
   parentId:ID
