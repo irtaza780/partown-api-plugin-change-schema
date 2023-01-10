@@ -48,6 +48,8 @@ type output {
 }
 type purchaseOutput {
   success: Boolean
+  status: Int
+  message: String
 }
 extend type Mutation {
   purchaseProperty(productId: String): purchaseOutput
@@ -56,6 +58,20 @@ extend type Mutation {
   updateAccountpayBookEntry(input:accountBookInput):AccountBook
   updateAvailableFulfillmentMethodEntry(input:AvailableFulfillmentMethodInput):[AvailableFulfillmentMethod]
   addProductVieworCart(input: VieworCartInput): output
+}
+
+type myPorperties {
+  properties: [Product]
+  success: Boolean
+  status: Int
+  message: String
+}
+input myPorpertiesInput {
+  pageNo: Int!
+  perPage: Int!
+}
+extend type Query {
+  getMyProperties(input: myPorpertiesInput): myPorperties
 }
 
 type previousOwners{

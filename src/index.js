@@ -2,6 +2,7 @@ import pkg from "../package.json";
 import cors from "cors";
 import bodyParser from "body-parser";
 import SimpleSchema from "simpl-schema";
+import axios from 'axios'
 import importAsString from "@reactioncommerce/api-utils/importAsString.js";
 const mySchema = importAsString("./schema.graphql");
 import getOrdersByUserId from "./utils/getOrders.js";
@@ -14,28 +15,108 @@ import updateUserFulfillmentMethod from "./utils/updateUserFulfillmentMethod.js"
 import encodeOpaqueId from "@reactioncommerce/api-utils/encodeOpaqueId.js";
 var _context = null;
 const resolvers = {
-  Query: {},
-  Mutation: {
-    async purchaseProperty(parent, args, context, info){
+  Query: {
+    async getMyProperties(parent, args, context, info) {
       try {
-        console.log("see context", context.user, context.userId)
-        // let { Products, Catalog } = context.collections;
-        // let { productId } = args;
-        // let _id = decodeOpaqueId(productId)?.id;
-        // console.log("productId", _id)
-        // Catalog.updateOne(
-        //     { _id },
-        //     { $set: { currentOwner: "partOwn" } }
-        //   )
-        
-        return {
-          success: true
+        let { Products } = context.collections;
+        let { user } = context;
+        let { pageNo, perPage } = args.input;
+        if( user ){
+          let myProperties = await Products.find({
+            "currentOwner.userId": user.id
+          })
+          .skip( pageNo > 0 ? ( ( pageNo - 1 ) * perPage ) : 0 )
+          .limit( perPage )
+          .toArray()
+          console.log("Products", myProperties);
+          return {
+            properties: myProperties,
+            success: true,
+            status: 200
+          }
+        } else {
+          return {
+            success: false,
+            message: `unAuthorized.`,
+            status: 400
+          }
         }
       } catch(err) {
         console.log("Error", err);
         return {
           success: false,
-          message: "Server Error.",
+          message: `Server Error ${err}.`,
+          status: 500
+        }
+      }
+    }
+  },
+  Mutation: {
+    async purchaseProperty(parent, args, context, info){
+      try {
+        if( context.user){
+          console.log("see context", context.authToken, context.user, context.userId)
+          const currentOwner = {
+            userId: context.userId,
+            userName: context.user.username
+          }
+          let { Products, Catalog } = context.collections;
+          let { productId } = args;
+          let _id = decodeOpaqueId(productId)?.id;
+          console.log("productId", _id)
+          await Products.updateOne(
+            { _id },
+            { 
+              $set: { 
+                currentOwner: currentOwner,
+                "propertySaleType.type": 'sold' 
+              }, 
+              $push: {
+                previousOwners: currentOwner
+              } 
+            }
+          )
+          var data = JSON.stringify({
+            query: `mutation {
+            publishProductsToCatalog(productIds: ["${productId}"]){
+              product{
+                title
+                propertyType
+              }
+            }
+          }`,
+            variables: {}
+          });
+  
+          var config = {
+            method: 'post',
+            url: 'http://localhost:3000/graphql',
+            headers: { 
+              'Authorization': `Bearer ${context.authToken}`, 
+              'Content-Type': 'application/json'
+            },
+            data : data
+          };
+  
+          await axios(config);
+          
+          return {
+            success: true,
+            status: 200,
+            message: 'property bought.'
+          }
+        } else {
+          return {
+            success: false,
+            message: `unAuthorized.`,
+            status: 401
+          }
+        }
+      } catch(err) {
+        console.log("Error", err);
+        return {
+          success: false,
+          message: `Server Error ${err}.`,
           status: 500
         }
       }
