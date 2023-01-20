@@ -127,7 +127,7 @@ const resolvers = {
   
           var config = {
             method: 'post',
-            url: 'http://localhost:3000/graphql',
+            url: 'https://dev.partown.co/graphql',
             headers: { 
               'Authorization': `Bearer ${context.authToken}`, 
               'Content-Type': 'application/json'
