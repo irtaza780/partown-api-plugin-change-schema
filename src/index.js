@@ -101,7 +101,7 @@ const resolvers = {
           let productInfo = await Products.find({ _id }).toArray();
 
           console.log("productId", _id, productInfo);
-          await Products.updateOne(
+          let updateProduct = await Products.updateOne(
             { _id },
             { 
               $set: { 
@@ -135,8 +135,8 @@ const resolvers = {
             data : data
           };
   
-          await axios(config);
-          
+          let response = await axios(config);
+          console.log("responses", response, updateProduct)
           await Accounts.updateOne(
             { userId: context.userId }, 
             { 
