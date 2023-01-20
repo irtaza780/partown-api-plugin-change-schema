@@ -66,10 +66,40 @@ type myPorperties {
   status: Int
   message: String
 }
+
+input propertyFiltersInput {
+  state: [String],
+  propertyType: String,
+  propertySaleType: String
+}
+
+enum sortBy {
+  "sort by property units"
+  propertyUnits
+
+  "sort by property price"
+  propertyPrice
+}
+
+enum sortOrder {
+  "asc"
+  asc
+
+  "desc"
+  desc
+}
+
+
 input myPorpertiesInput {
   pageNo: Int!
   perPage: Int!
+  propertyFilters: propertyFiltersInput
+  sortBy: sortBy
+  sortOrder: sortOrder
 }
+
+
+
 extend type Query {
   getMyProperties(input: myPorpertiesInput): myPorperties
 }

@@ -20,11 +20,46 @@ const resolvers = {
       try {
         let { Products } = context.collections;
         let { user } = context;
-        let { pageNo, perPage } = args.input;
+        let { pageNo, perPage, propertyFilters, sortBy, sortOrder } = args.input;
         if( user ){
-          let myProperties = await Products.find({
-            "currentOwner.userId": user.id
-          })
+          console.log("input", args.input)
+          const query = {
+            "currentOwner.userId": user.id,
+            isVisible: true
+          };
+          if(propertyFilters){
+            console.log("if statement" ,propertyFilters)
+            const { state, propertyType, propertySaleType } = propertyFilters;
+            if(state?.length) query['location.state'] = { $in: state };
+            if(propertySaleType) query['propertySaleType.type']=propertySaleType;
+            if(propertyType) query['propertyType'] = propertyType
+          } else if( !propertyFilters?.propertySaleType ) {
+            console.log("else statement", propertyFilters)
+            query['propertySaleType.type'] = "sold"
+          }
+          // let myProperties = await Products.find({
+          //   "currentOwner.userId": user.id
+          // })
+          // .skip( pageNo > 0 ? ( ( pageNo - 1 ) * perPage ) : 0 )
+          // .limit( perPage )
+          // .toArray()
+
+          const sortByInfo = { }
+          if(sortBy){
+            if(sortBy === "propertyUnits"){
+              sortByInfo['area.value'] = sortOrder === "asc" ? 1 : -1
+              // todo
+            } else if(sortBy === "propertyPrice") {
+              // todo
+              sortByInfo['area.price'] = sortOrder === "asc" ? 1 : -1
+            }
+          } else {
+            // todo
+            sortByInfo['createdAt'] = sortOrder === "asc" ? 1 : -1
+          }
+          console.log("here is the query", query, sortByInfo)
+          let myProperties = await Products.find(query)
+          .sort(sortByInfo)
           .skip( pageNo > 0 ? ( ( pageNo - 1 ) * perPage ) : 0 )
           .limit( perPage )
           .toArray()
@@ -58,12 +93,14 @@ const resolvers = {
           console.log("see context", context.authToken, context.user, context.userId)
           const currentOwner = {
             userId: context.userId,
-            userName: context.user.username
+            userName: context?.user?.username ?? "null"
           }
-          let { Products, Catalog } = context.collections;
+          let { Products, Catalog, Accounts } = context.collections;
           let { productId } = args;
           let _id = decodeOpaqueId(productId)?.id;
-          console.log("productId", _id)
+          let productInfo = await Products.find({ _id }).toArray();
+
+          console.log("productId", _id, productInfo);
           await Products.updateOne(
             { _id },
             { 
@@ -100,6 +137,14 @@ const resolvers = {
   
           await axios(config);
           
+          await Accounts.updateOne(
+            { userId: context.userId }, 
+            { 
+              $inc: { "wallets.amount": -productInfo[0]?.area?.price },
+              // $set: { "wallets.currency": wallet.currency }
+            }
+          )
+
           return {
             success: true,
             status: 200,
