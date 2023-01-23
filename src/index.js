@@ -367,10 +367,12 @@ function myStartup1(context) {
   })
   const currentOwner = new SimpleSchema({
     userId: {
-      type: String
+      type: String,
+      optional: true
     },
     userName: {
-      type: String
+      type: String,
+      optional: true
     }
   })
   context.simpleSchemas.Product.extend({
