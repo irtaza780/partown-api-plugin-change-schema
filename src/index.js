@@ -96,9 +96,19 @@ const resolvers = {
             userName: context?.user?.username ?? "null"
           }
           let { Products, Catalog, Accounts } = context.collections;
+          // let userWallet = await Accounts.findOne({ userId: context.userId })
+          let productInfo = await Products.find({ _id }).toArray();
+          // if(userWallet?.wallets?.amount > productInfo?.area?.price ){
+          //   // todo
+          // } else {
+          //   return {
+          //     success: false,
+          //     status: 200,
+          //     message: "Don't have enough balance."
+          //   }
+          // }
           let { productId } = args;
           let _id = decodeOpaqueId(productId)?.id;
-          let productInfo = await Products.find({ _id }).toArray();
 
           console.log("productId", _id, productInfo);
           let updateProduct = await Products.updateOne(
@@ -127,7 +137,7 @@ const resolvers = {
   
           var config = {
             method: 'post',
-            url: 'https://dev.partown.co/graphql',
+            url: 'http://localhost:3000/graphql',
             headers: { 
               'Authorization': `Bearer ${context.authToken}`, 
               'Content-Type': 'application/json'
@@ -136,7 +146,7 @@ const resolvers = {
           };
   
           let response = await axios(config);
-          console.log("responses", response, updateProduct)
+          console.log("responses", response.data, updateProduct)
           await Accounts.updateOne(
             { userId: context.userId }, 
             { 
@@ -331,10 +341,12 @@ function myStartup1(context) {
   })
   const previousOwners = new SimpleSchema({
     userId: {
-      type: String
+      type: String,
+      optional: true
     },
     userName: {
-      type: String
+      type: String,
+      optional: true
     }
   })
   const location = new SimpleSchema({
