@@ -97,7 +97,6 @@ const resolvers = {
           }
           let { Products, Catalog, Accounts } = context.collections;
           // let userWallet = await Accounts.findOne({ userId: context.userId })
-          let productInfo = await Products.find({ _id }).toArray();
           // if(userWallet?.wallets?.amount > productInfo?.area?.price ){
           //   // todo
           // } else {
@@ -109,7 +108,7 @@ const resolvers = {
           // }
           let { productId } = args;
           let _id = decodeOpaqueId(productId)?.id;
-
+          let productInfo = await Products.find({ _id }).toArray();
           console.log("productId", _id, productInfo);
           let updateProduct = await Products.updateOne(
             { _id },
