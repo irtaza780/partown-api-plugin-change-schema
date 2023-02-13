@@ -74,7 +74,7 @@ input propertyFiltersInput {
 }
 
 enum sortBy {
-  "sort by property units"
+  "sort by property units (test)"
   propertyUnits
 
   "sort by property price"
