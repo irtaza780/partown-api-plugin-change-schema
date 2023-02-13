@@ -394,7 +394,7 @@ function myStartup1(context) {
     },
   });
   const planMedia = new SimpleSchema({
-    url: { type: String, optional: true },
+    url: { type: Array, optional: true },
   });
   const documents = new SimpleSchema({
     url: {
@@ -431,7 +431,7 @@ function myStartup1(context) {
     location: location,
     documents: [documents],
     area: area,
-    planMedia: planMedia,
+    planMedia: [planMedia],
   });
   context.simpleSchemas.CatalogProduct.extend({
     // uploadedBy: OwnerInfo,
