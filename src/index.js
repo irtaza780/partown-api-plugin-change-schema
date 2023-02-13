@@ -394,7 +394,10 @@ function myStartup1(context) {
     },
   });
   const planMedia = new SimpleSchema({
-    url: { type: Array, optional: true },
+    url: {
+      type: String,
+      optional: true,
+    },
   });
   const documents = new SimpleSchema({
     url: {

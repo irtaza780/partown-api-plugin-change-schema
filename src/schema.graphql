@@ -219,10 +219,10 @@ extend type CatalogProduct {
   investmentDetails: investmentDetails
   priceHistory: [priceHistory]
   documents: [documents]
+  planMedia: [planMedia]
   propertySaleType: propertySaleType
   previousOwners: [previousOwners]
   location: location
-  planMedia: [planMedia]
   upVotes: Int
   ancestorId: ID
   parentId: ID
