@@ -141,7 +141,7 @@ type currentOwner {
   userId: String
   userName: String
 }
-"floor plans media (1)"
+"floor plans media (2)"
 type planMedia {
   url: [String]
 }
