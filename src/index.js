@@ -431,6 +431,7 @@ function myStartup1(context) {
     location: location,
     documents: [documents],
     area: area,
+    planMedia: planMedia,
   });
   context.simpleSchemas.CatalogProduct.extend({
     // uploadedBy: OwnerInfo,
