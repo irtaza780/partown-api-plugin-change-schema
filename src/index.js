@@ -2,7 +2,7 @@ import pkg from "../package.json";
 import cors from "cors";
 import bodyParser from "body-parser";
 import SimpleSchema from "simpl-schema";
-import axios from 'axios'
+import axios from "axios";
 import importAsString from "@reactioncommerce/api-utils/importAsString.js";
 const mySchema = importAsString("./schema.graphql");
 import getOrdersByUserId from "./utils/getOrders.js";
@@ -20,22 +20,24 @@ const resolvers = {
       try {
         let { Products } = context.collections;
         let { user } = context;
-        let { pageNo, perPage, propertyFilters, sortBy, sortOrder } = args.input;
-        if( user ){
-          console.log("input", args.input)
+        let { pageNo, perPage, propertyFilters, sortBy, sortOrder } =
+          args.input;
+        if (user) {
+          console.log("input", args.input);
           const query = {
             "currentOwner.userId": user.id,
-            isVisible: true
+            isVisible: true,
           };
-          if(propertyFilters){
-            console.log("if statement" ,propertyFilters)
+          if (propertyFilters) {
+            console.log("if statement", propertyFilters);
             const { state, propertyType, propertySaleType } = propertyFilters;
-            if(state?.length) query['location.state'] = { $in: state };
-            if(propertySaleType) query['propertySaleType.type']=propertySaleType;
-            if(propertyType) query['propertyType'] = propertyType
-          } else if( !propertyFilters?.propertySaleType ) {
-            console.log("else statement", propertyFilters)
-            query['propertySaleType.type'] = "sold"
+            if (state?.length) query["location.state"] = { $in: state };
+            if (propertySaleType)
+              query["propertySaleType.type"] = propertySaleType;
+            if (propertyType) query["propertyType"] = propertyType;
+          } else if (!propertyFilters?.propertySaleType) {
+            console.log("else statement", propertyFilters);
+            query["propertySaleType.type"] = "sold";
           }
           // let myProperties = await Products.find({
           //   "currentOwner.userId": user.id
@@ -44,57 +46,62 @@ const resolvers = {
           // .limit( perPage )
           // .toArray()
 
-          const sortByInfo = { }
-          if(sortBy){
-            if(sortBy === "propertyUnits"){
-              sortByInfo['area.value'] = sortOrder === "asc" ? 1 : -1
+          const sortByInfo = {};
+          if (sortBy) {
+            if (sortBy === "propertyUnits") {
+              sortByInfo["area.value"] = sortOrder === "asc" ? 1 : -1;
               // todo
-            } else if(sortBy === "propertyPrice") {
+            } else if (sortBy === "propertyPrice") {
               // todo
-              sortByInfo['area.price'] = sortOrder === "asc" ? 1 : -1
+              sortByInfo["area.price"] = sortOrder === "asc" ? 1 : -1;
             }
           } else {
             // todo
-            sortByInfo['createdAt'] = sortOrder === "asc" ? 1 : -1
+            sortByInfo["createdAt"] = sortOrder === "asc" ? 1 : -1;
           }
-          console.log("here is the query", query, sortByInfo)
+          console.log("here is the query", query, sortByInfo);
           let myProperties = await Products.find(query)
-          .sort(sortByInfo)
-          .skip( pageNo > 0 ? ( ( pageNo - 1 ) * perPage ) : 0 )
-          .limit( perPage )
-          .toArray()
+            .sort(sortByInfo)
+            .skip(pageNo > 0 ? (pageNo - 1) * perPage : 0)
+            .limit(perPage)
+            .toArray();
           console.log("Products", myProperties);
           return {
             properties: myProperties,
             success: true,
-            status: 200
-          }
+            status: 200,
+          };
         } else {
           return {
             success: false,
             message: `unAuthorized.`,
-            status: 400
-          }
+            status: 400,
+          };
         }
-      } catch(err) {
+      } catch (err) {
         console.log("Error", err);
         return {
           success: false,
           message: `Server Error ${err}.`,
-          status: 500
-        }
+          status: 500,
+        };
       }
-    }
+    },
   },
   Mutation: {
-    async purchaseProperty(parent, args, context, info){
+    async purchaseProperty(parent, args, context, info) {
       try {
-        if( context.user){
-          console.log("see context", context.authToken, context.user, context.userId)
+        if (context.user) {
+          console.log(
+            "see context",
+            context.authToken,
+            context.user,
+            context.userId
+          );
           const currentOwner = {
             userId: context.userId,
-            userName: context?.user?.username ?? "null"
-          }
+            userName: context?.user?.username ?? "null",
+          };
           let { Products, Catalog, Accounts } = context.collections;
           // let userWallet = await Accounts.findOne({ userId: context.userId })
           // if(userWallet?.wallets?.amount > productInfo?.area?.price ){
@@ -112,16 +119,16 @@ const resolvers = {
           console.log("productId", _id, productInfo);
           let updateProduct = await Products.updateOne(
             { _id },
-            { 
-              $set: { 
+            {
+              $set: {
                 currentOwner: currentOwner,
-                "propertySaleType.type": 'sold' 
-              }, 
+                "propertySaleType.type": "sold",
+              },
               $push: {
-                previousOwners: currentOwner
-              } 
+                previousOwners: currentOwner,
+              },
             }
-          )
+          );
           var data = JSON.stringify({
             query: `mutation {
             publishProductsToCatalog(productIds: ["${productId}"]){
@@ -131,48 +138,48 @@ const resolvers = {
               }
             }
           }`,
-            variables: {}
+            variables: {},
           });
-  
+
           var config = {
-            method: 'post',
-            url: 'http://localhost:3000/graphql',
-            headers: { 
-              'Authorization': `Bearer ${context.authToken}`, 
-              'Content-Type': 'application/json'
+            method: "post",
+            url: "http://localhost:3000/graphql",
+            headers: {
+              Authorization: `Bearer ${context.authToken}`,
+              "Content-Type": "application/json",
             },
-            data : data
+            data: data,
           };
-  
+
           let response = await axios(config);
-          console.log("responses", response.data, updateProduct)
+          console.log("responses", response.data, updateProduct);
           await Accounts.updateOne(
-            { userId: context.userId }, 
-            { 
+            { userId: context.userId },
+            {
               $inc: { "wallets.amount": -productInfo[0]?.area?.price },
               // $set: { "wallets.currency": wallet.currency }
             }
-          )
+          );
 
           return {
             success: true,
             status: 200,
-            message: 'property bought.'
-          }
+            message: "property bought.",
+          };
         } else {
           return {
             success: false,
             message: `unAuthorized.`,
-            status: 401
-          }
+            status: 401,
+          };
         }
-      } catch(err) {
+      } catch (err) {
         console.log("Error", err);
         return {
           success: false,
           message: `Server Error ${err}.`,
-          status: 500
-        }
+          status: 500,
+        };
       }
     },
     async updateAccountpayBookEntry(parent, args, context, info) {
@@ -180,40 +187,61 @@ const resolvers = {
       return updateResponse;
     },
     async updateAvailableFulfillmentMethodEntry(parent, args, context, info) {
-      let updateResponse = await updateUserFulfillmentMethod(context, args.input);
-      let reaction_response=updateResponse.length>0?updateResponse.map(id=>{ return encodeOpaqueIdFunction("reaction/fulfillmentMethod",id)}):[]
+      let updateResponse = await updateUserFulfillmentMethod(
+        context,
+        args.input
+      );
+      let reaction_response =
+        updateResponse.length > 0
+          ? updateResponse.map((id) => {
+              return encodeOpaqueIdFunction("reaction/fulfillmentMethod", id);
+            })
+          : [];
       return reaction_response;
     },
     async deleteAccount(parent, args, context, info) {
       try {
         let { userId } = args;
-        let {  Products, Accounts, users, Bids, Catalog } = context.collections;
-        console.log("userId", userId)
-        let deletedBids = await Bids.remove({$or: [ { soldBy:  userId }, { createdBy: userId } ]});
-        let deletedCatalog = await Catalog.remove({ "product.uploadedBy.userId": userId });
-        let deletedProducts = await Products.remove({ "uploadedBy.userId": userId });
+        let { Products, Accounts, users, Bids, Catalog } = context.collections;
+        console.log("userId", userId);
+        let deletedBids = await Bids.remove({
+          $or: [{ soldBy: userId }, { createdBy: userId }],
+        });
+        let deletedCatalog = await Catalog.remove({
+          "product.uploadedBy.userId": userId,
+        });
+        let deletedProducts = await Products.remove({
+          "uploadedBy.userId": userId,
+        });
         let deletedUser = await users.remove({ _id: userId });
-        let deletedAccount = await Accounts.remove({ userId })
-        console.log("deletedBids", deletedBids, deletedCatalog, deletedProducts, deletedUser, deletedAccount);
-        if( deletedUser?.deletedCount > 0 || deletedAccount?.deletedCount > 0 )
+        let deletedAccount = await Accounts.remove({ userId });
+        console.log(
+          "deletedBids",
+          deletedBids,
+          deletedCatalog,
+          deletedProducts,
+          deletedUser,
+          deletedAccount
+        );
+        if (deletedUser?.deletedCount > 0 || deletedAccount?.deletedCount > 0)
           return {
             success: true,
             message: "deleted successfully.",
-            status: 200
-          }
+            status: 200,
+          };
         else
           return {
             success: false,
             message: "please refresh again!",
-            status: 200
-          } 
-      } catch(err){
-        console.log("error", err)
+            status: 200,
+          };
+      } catch (err) {
+        console.log("error", err);
         return {
           success: false,
           message: "Server Error.",
-          status: 500
-        }
+          status: 500,
+        };
       }
     },
     async updateUserPassword(parent, args, context, info) {
@@ -226,25 +254,25 @@ const resolvers = {
           { $set: { "services.password.bcrypt": password } }
         );
         console.log("updatedPassword", updatedPassword);
-        if( updatedPassword?.result?.nModified > 0 )
+        if (updatedPassword?.result?.nModified > 0)
           return {
             success: true,
             message: "updated successfully.",
-            status: 200
-          }
+            status: 200,
+          };
         else
           return {
             success: false,
             message: "please refresh again!",
-            status: 200
-          } 
-      } catch(err){
-        console.log("error", err)
+            status: 200,
+          };
+      } catch (err) {
+        console.log("error", err);
         return {
           success: false,
           message: "Server Error.",
-          status: 500
-        }
+          status: 500,
+        };
       }
     },
     async addProductVieworCart(parent, args, context, info) {
@@ -252,36 +280,30 @@ const resolvers = {
         let { Products } = context.collections;
         let { productId, flag } = args.input;
         let _id = decodeOpaqueId(productId)?.id;
-        console.log("productId", _id)
-        if( flag === "cart" ) {
-          Products.updateOne(
-            { _id },
-            { $inc: { totalCarts: 1 } }
-          )
+        console.log("productId", _id);
+        if (flag === "cart") {
+          Products.updateOne({ _id }, { $inc: { totalCarts: 1 } });
         } else {
-          Products.updateOne(
-            { _id },
-            { $inc: { productViews: 1 } }
-          )
+          Products.updateOne({ _id }, { $inc: { productViews: 1 } });
         }
         return {
           success: true,
           message: "Successfull.",
-          status: 200
-        }
-      } catch(err) {
+          status: 200,
+        };
+      } catch (err) {
         console.log("Error", err);
         return {
           success: false,
           message: "Server Error.",
-          status: 500
-        }
+          status: 500,
+        };
       }
-    }
+    },
   },
 };
-function encodeOpaqueIdFunction(source,id){
-  return encodeOpaqueId(source, id)
+function encodeOpaqueIdFunction(source, id) {
+  return encodeOpaqueId(source, id);
 }
 function myStartup1(context) {
   _context = context;
@@ -304,88 +326,91 @@ function myStartup1(context) {
   });
   const investmentDetails = new SimpleSchema({
     description: {
-      type: String
+      type: String,
     },
     landValue: {
-      type: String
+      type: String,
     },
     developmentValue: {
-      type: String
+      type: String,
     },
     agency: {
-      type: String
+      type: String,
     },
     legal: {
-      type: String
+      type: String,
     },
     totalCost: {
-      type: String
+      type: String,
     },
     unitPrice: {
-      type: String
-    }
-  })
-  const priceHistory = new SimpleSchema ({
+      type: String,
+    },
+  });
+  const priceHistory = new SimpleSchema({
     price: {
-      type: String
+      type: String,
     },
     date: {
-      type: String
-    }
-  })
+      type: String,
+    },
+  });
   const propertySaleType = new SimpleSchema({
     type: {
-      type: String
-    }
-  })
+      type: String,
+    },
+  });
   const previousOwners = new SimpleSchema({
     userId: {
       type: String,
-      optional: true
+      optional: true,
     },
     userName: {
       type: String,
-      optional: true
-    }
-  })
+      optional: true,
+    },
+  });
   const location = new SimpleSchema({
     country: {
-      type: String
+      type: String,
     },
     state: {
-      type: String
+      type: String,
     },
     location: {
-      type: String
-    }
-  })
+      type: String,
+    },
+  });
 
   const area = new SimpleSchema({
     unit: {
-      type: String
+      type: String,
     },
     price: {
-      type: Number
+      type: Number,
     },
     value: {
-      type: Number
-    }
-  })
+      type: Number,
+    },
+  });
+  const planMedia = new SimpleSchema({
+    url: { type: String, optional: true },
+  });
   const documents = new SimpleSchema({
     url: {
-      type: String
-    }
-  })
+      type: String,
+    },
+  });
   const currentOwner = new SimpleSchema({
     userId: {
       type: String,
-      optional: true
+      optional: true,
     },
     userName: {
       type: String,
-      optional: true
-    }
-  })
+      optional: true,
+    },
+  });
   context.simpleSchemas.Product.extend({
     // uploadedBy: OwnerInfo,
     ancestorId: {
@@ -397,7 +422,7 @@ function myStartup1(context) {
       optional: true,
     },
     propertyType: {
-      type: String
+      type: String,
     },
     previousOwners: [previousOwners],
     currentOwner: currentOwner,
@@ -405,7 +430,7 @@ function myStartup1(context) {
     propertySaleType: propertySaleType,
     location: location,
     documents: [documents],
-    area: area
+    area: area,
   });
   context.simpleSchemas.CatalogProduct.extend({
     // uploadedBy: OwnerInfo,
@@ -418,7 +443,7 @@ function myStartup1(context) {
       optional: true,
     },
     propertyType: {
-      type: String
+      type: String,
     },
     previousOwners: [previousOwners],
     currentOwner: currentOwner,
@@ -426,9 +451,9 @@ function myStartup1(context) {
     propertySaleType: propertySaleType,
     location: location,
     documents: [documents],
-    area: area
+    area: area,
   });
-  }
+}
 // The new myPublishProductToCatalog function parses our products,
 // gets the new uploadedBy attribute, and adds it to the corresposellernding catalog variant in preparation for publishing it to the catalog
 function myPublishProductToCatalog(
@@ -436,18 +461,19 @@ function myPublishProductToCatalog(
   { context, product, shop, variants }
 ) {
   let { collections } = context;
-  console.log("cataLogProduct", catalogProduct)
+  console.log("cataLogProduct", catalogProduct);
   // console.log("check product", catalogProduct, product, collections)
   // catalogProduct.uploadedBy = product.uploadedBy || null;
   // catalogProduct.upVotes = product.upVotes || 0;
   catalogProduct.currentOwner = product.currentOwner ?? "partOwn";
   catalogProduct.propertyType = product.propertyType || "not specifiend";
-  catalogProduct.documents = product?.documents
+  catalogProduct.documents = product?.documents;
   catalogProduct.previousOwners = product.previousOwners ?? [];
   catalogProduct.investmentDetails = product.investmentDetails ?? null;
-  catalogProduct.area = product?.area
-  catalogProduct.propertySaleType = product.propertySaleType ?? "presale"
+  catalogProduct.area = product?.area;
+  catalogProduct.propertySaleType = product.propertySaleType ?? "presale";
   catalogProduct.location = product.location ?? null;
+  catalogProduct.planMedia = product.planMedia ?? [];
   // catalogProduct.variants &&
   //   catalogProduct.variants.map((catalogVariant) => {
   //     const productVariant = variants.find(

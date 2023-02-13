@@ -1,27 +1,27 @@
 input accountBookInput {
   AccountTitle: String
-  swiftCode:String
-  AccountNo:String
-  isActive:Boolean
-  AccountId:ID!
-  AccountBookId:ID
+  swiftCode: String
+  AccountNo: String
+  isActive: Boolean
+  AccountId: ID!
+  AccountBookId: ID
 }
 
 type AccountBook {
-  _id:ID!
+  _id: ID!
   AccountTitle: String
-  swiftCode:String
-  AccountNo:String
-  isActive:Boolean
+  swiftCode: String
+  AccountNo: String
+  isActive: Boolean
 }
 
 input AvailableFulfillmentMethodInput {
-  AccountId:ID!
-  FulfillmentMethodId:ID!
-  status:Boolean!
-  }
-  
-scalar AvailableFulfillmentMethod 
+  AccountId: ID!
+  FulfillmentMethodId: ID!
+  status: Boolean!
+}
+
+scalar AvailableFulfillmentMethod
 type deleteOutput {
   success: Boolean
   message: String
@@ -55,8 +55,10 @@ extend type Mutation {
   purchaseProperty(productId: String): purchaseOutput
   deleteAccount(userId: String!): deleteOutput
   updateUserPassword(input: updatePassword): updatePasswordOutPut
-  updateAccountpayBookEntry(input:accountBookInput):AccountBook
-  updateAvailableFulfillmentMethodEntry(input:AvailableFulfillmentMethodInput):[AvailableFulfillmentMethod]
+  updateAccountpayBookEntry(input: accountBookInput): AccountBook
+  updateAvailableFulfillmentMethodEntry(
+    input: AvailableFulfillmentMethodInput
+  ): [AvailableFulfillmentMethod]
   addProductVieworCart(input: VieworCartInput): output
 }
 
@@ -68,8 +70,8 @@ type myPorperties {
 }
 
 input propertyFiltersInput {
-  state: [String],
-  propertyType: String,
+  state: [String]
+  propertyType: String
   propertySaleType: String
 }
 
@@ -89,7 +91,6 @@ enum sortOrder {
   desc
 }
 
-
 input myPorpertiesInput {
   pageNo: Int!
   perPage: Int!
@@ -98,13 +99,11 @@ input myPorpertiesInput {
   sortOrder: sortOrder
 }
 
-
-
 extend type Query {
   getMyProperties(input: myPorpertiesInput): myPorperties
 }
 
-type previousOwners{
+type previousOwners {
   userId: String
   userName: String
 }
@@ -142,6 +141,10 @@ type currentOwner {
   userId: String
   userName: String
 }
+"floor plans media"
+type planMedia {
+  url: [String]
+}
 extend type Product {
   "uploadedBy: uploadedBy"
   currentOwner: currentOwner
@@ -156,9 +159,10 @@ extend type Product {
   area: area
   productViews: Int
   totalCarts: Int
-  ancestorId:ID
-  parentId:ID
+  ancestorId: ID
+  parentId: ID
   location: location
+  planMedia: planMedia
 }
 
 input documentsInput {
@@ -167,7 +171,7 @@ input documentsInput {
 
 input areaInput {
   unit: String
-  price:Float
+  price: Float
   value: Float
 }
 
@@ -189,6 +193,9 @@ input locationInput {
   state: String
   location: String
 }
+input planMediaInput {
+  url: [String]
+}
 extend input ProductInput {
   "uploadedBy: uploadedByinput"
   propertyType: String
@@ -198,8 +205,9 @@ extend input ProductInput {
   upVotes: Int
   area: areaInput
   documents: [documentsInput]
-  ancestorId:ID
-  parentId:ID
+  planMedia: planMediaInput
+  ancestorId: ID
+  parentId: ID
 }
 
 extend type CatalogProduct {
@@ -214,26 +222,26 @@ extend type CatalogProduct {
   propertySaleType: propertySaleType
   previousOwners: [previousOwners]
   location: location
+  planMedia: planMedia
   upVotes: Int
-  ancestorId:ID
-  parentId:ID
+  ancestorId: ID
+  parentId: ID
 }
 type uploadedBy {
-  name:String
-  image:String
-  userId:ID
-  FulfillmentMethods:[AvailableFulfillmentMethod]
- }
+  name: String
+  image: String
+  userId: ID
+  FulfillmentMethods: [AvailableFulfillmentMethod]
+}
 input uploadedByinput {
-  name:String
-  image:String
-  userId:ID
+  name: String
+  image: String
+  userId: ID
 }
 extend type Account {
-Product:[Product]
-identityVerified:Boolean
-orderFulfillment:[Order]
-AccountBook:[AccountBook]
-AvailableFulfillmentMethods:[AvailableFulfillmentMethod]
+  Product: [Product]
+  identityVerified: Boolean
+  orderFulfillment: [Order]
+  AccountBook: [AccountBook]
+  AvailableFulfillmentMethods: [AvailableFulfillmentMethod]
 }
-
