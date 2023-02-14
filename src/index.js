@@ -433,8 +433,9 @@ function myStartup1(context) {
     propertySaleType: propertySaleType,
     location: location,
     documents: [documents],
-    area: area,
     planMedia: [planMedia],
+    area: area,
+  
   });
   context.simpleSchemas.CatalogProduct.extend({
     // uploadedBy: OwnerInfo,
@@ -455,6 +456,7 @@ function myStartup1(context) {
     propertySaleType: propertySaleType,
     location: location,
     documents: [documents],
+    planMedia: [planMedia],
     area: area,
   });
 }
@@ -465,7 +467,12 @@ function myPublishProductToCatalog(
   { context, product, shop, variants }
 ) {
   let { collections } = context;
-  console.log("cataLogProduct", catalogProduct);
+  console.log("collections are");
+  console.log(collections);
+
+  console.log("catalog Product");
+  console.log(catalogProduct);
+
   // console.log("check product", catalogProduct, product, collections)
   // catalogProduct.uploadedBy = product.uploadedBy || null;
   // catalogProduct.upVotes = product.upVotes || 0;
