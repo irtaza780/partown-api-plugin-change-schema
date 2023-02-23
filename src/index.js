@@ -434,8 +434,8 @@ function myStartup1(context) {
     location: location,
     documents: [documents],
     planMedia: [planMedia],
+    activeStatus: Boolean,
     area: area,
-  
   });
   context.simpleSchemas.CatalogProduct.extend({
     // uploadedBy: OwnerInfo,
@@ -457,6 +457,7 @@ function myStartup1(context) {
     location: location,
     documents: [documents],
     planMedia: [planMedia],
+    activeStatus: Boolean,
     area: area,
   });
 }
@@ -485,6 +486,7 @@ function myPublishProductToCatalog(
   catalogProduct.propertySaleType = product.propertySaleType ?? "presale";
   catalogProduct.location = product.location ?? null;
   catalogProduct.planMedia = product.planMedia ?? [];
+  catalogProduct.activeStatus = product.activeStatus ?? true;
   // catalogProduct.variants &&
   //   catalogProduct.variants.map((catalogVariant) => {
   //     const productVariant = variants.find(

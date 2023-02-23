@@ -76,7 +76,7 @@ input propertyFiltersInput {
 }
 
 enum sortBy {
-  "sort by property units (test (1))"
+  "sort by property units (test (2))"
   propertyUnits
 
   "sort by property price"
@@ -163,6 +163,7 @@ extend type Product {
   parentId: ID
   location: location
   planMedia: [planMedia]
+  activeStatus: Boolean
 }
 
 input documentsInput {
@@ -206,6 +207,7 @@ extend input ProductInput {
   area: areaInput
   documents: [documentsInput]
   planMedia: [planMediaInput]
+  activeStatus: Boolean
   ancestorId: ID
   parentId: ID
 }
@@ -220,6 +222,7 @@ extend type CatalogProduct {
   priceHistory: [priceHistory]
   documents: [documents]
   planMedia: [planMedia]
+  activeStatus: Boolean
   propertySaleType: propertySaleType
   previousOwners: [previousOwners]
   location: location
