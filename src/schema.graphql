@@ -145,6 +145,12 @@ type currentOwner {
 type planMedia {
   url: String
 }
+"property location coordinates"
+type coordinates {
+  latitude: String
+  longitude: String
+}
+
 extend type Product {
   "uploadedBy: uploadedBy"
   currentOwner: currentOwner
@@ -163,6 +169,7 @@ extend type Product {
   parentId: ID
   location: location
   planMedia: [planMedia]
+  coordinates: coordinates
   activeStatus: Boolean
 }
 
@@ -197,6 +204,11 @@ input locationInput {
 input planMediaInput {
   url: String
 }
+input coordinatesInput {
+  latitude: String
+  longitude: String
+}
+
 extend input ProductInput {
   "uploadedBy: uploadedByinput"
   propertyType: String
@@ -207,6 +219,7 @@ extend input ProductInput {
   area: areaInput
   documents: [documentsInput]
   planMedia: [planMediaInput]
+  coordinates: coordinatesInput
   activeStatus: Boolean
   ancestorId: ID
   parentId: ID
@@ -222,6 +235,7 @@ extend type CatalogProduct {
   priceHistory: [priceHistory]
   documents: [documents]
   planMedia: [planMedia]
+  coordinates: coordinatesInput
   activeStatus: Boolean
   propertySaleType: propertySaleType
   previousOwners: [previousOwners]

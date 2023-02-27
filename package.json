@@ -1,5 +1,5 @@
 {
-  "name": "@partown/api-plugin-update-schema",
+  "name": "@partown/api-plugin-change-schema",
   "description": "Boilerplate Example plugin for the Reaction API",
   "version": "7.1.1",
   "main": "index.js",

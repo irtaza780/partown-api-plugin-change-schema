@@ -404,6 +404,14 @@ function myStartup1(context) {
       type: String,
     },
   });
+  const coordinates = new SimpleSchema({
+    longitude: {
+      type: String,
+    },
+    latitude: {
+      type: String,
+    },
+  });
   const currentOwner = new SimpleSchema({
     userId: {
       type: String,
@@ -434,6 +442,7 @@ function myStartup1(context) {
     location: location,
     documents: [documents],
     planMedia: [planMedia],
+    coordinates: [coordinates],
     activeStatus: Boolean,
     area: area,
   });
@@ -457,6 +466,7 @@ function myStartup1(context) {
     location: location,
     documents: [documents],
     planMedia: [planMedia],
+    coordinates: coordinates,
     activeStatus: Boolean,
     area: area,
   });
@@ -486,6 +496,7 @@ function myPublishProductToCatalog(
   catalogProduct.propertySaleType = product.propertySaleType ?? "presale";
   catalogProduct.location = product.location ?? null;
   catalogProduct.planMedia = product.planMedia ?? [];
+  catalogProduct.coordinates = product.coordinates ?? {};
   catalogProduct.activeStatus = product.activeStatus ?? true;
   // catalogProduct.variants &&
   //   catalogProduct.variants.map((catalogVariant) => {
