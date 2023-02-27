@@ -130,7 +130,7 @@ type documents {
 }
 type financials {
   title: String
-  value: Number
+  value: Float
 }
 type propertySaleType {
   "property type"
@@ -183,7 +183,7 @@ input documentsInput {
 }
 input financialsInput {
   title: String
-  value: Number
+  value: Float
 }
 
 input areaInput {
