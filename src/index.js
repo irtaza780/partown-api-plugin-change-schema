@@ -404,6 +404,14 @@ function myStartup1(context) {
       type: String,
     },
   });
+  const financials = new SimpleSchema({
+    title: {
+      type: String,
+    },
+    value: {
+      type: Number,
+    },
+  });
   const coordinates = new SimpleSchema({
     longitude: {
       type: String,
@@ -441,6 +449,7 @@ function myStartup1(context) {
     propertySaleType: propertySaleType,
     location: location,
     documents: [documents],
+    financials: [financials],
     planMedia: [planMedia],
     coordinates: [coordinates],
     activeStatus: Boolean,
@@ -465,6 +474,7 @@ function myStartup1(context) {
     propertySaleType: propertySaleType,
     location: location,
     documents: [documents],
+    financials: [financials],
     planMedia: [planMedia],
     coordinates: coordinates,
     activeStatus: Boolean,
@@ -490,6 +500,7 @@ function myPublishProductToCatalog(
   catalogProduct.currentOwner = product.currentOwner ?? "partOwn";
   catalogProduct.propertyType = product.propertyType || "not specifiend";
   catalogProduct.documents = product?.documents;
+  catalogProduct.financials = product?.financials;
   catalogProduct.previousOwners = product.previousOwners ?? [];
   catalogProduct.investmentDetails = product.investmentDetails ?? null;
   catalogProduct.area = product?.area;
