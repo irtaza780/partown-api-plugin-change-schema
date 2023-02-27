@@ -235,7 +235,7 @@ extend type CatalogProduct {
   priceHistory: [priceHistory]
   documents: [documents]
   planMedia: [planMedia]
-  coordinates: coordinatesInput
+  coordinates: coordinates
   activeStatus: Boolean
   propertySaleType: propertySaleType
   previousOwners: [previousOwners]
