@@ -451,7 +451,7 @@ function myStartup1(context) {
     documents: [documents],
     financials: [financials],
     planMedia: [planMedia],
-    coordinates: [coordinates],
+    coordinates: coordinates,
     activeStatus: Boolean,
     area: area,
   });
