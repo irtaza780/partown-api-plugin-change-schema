@@ -392,6 +392,9 @@ function myStartup1(context) {
     value: {
       type: Number,
     },
+    availableQuantity: {
+      type: Number,
+    },
   });
   const planMedia = new SimpleSchema({
     url: {

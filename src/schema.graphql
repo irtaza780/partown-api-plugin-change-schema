@@ -140,6 +140,7 @@ type area {
   unit: String
   price: Float
   value: Float
+  availableQuantity: Float
 }
 type currentOwner {
   userId: String
@@ -190,6 +191,7 @@ input areaInput {
   unit: String
   price: Float
   value: Float
+  availableQuantity: Float
 }
 
 input investmentDetailsInput {
