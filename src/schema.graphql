@@ -108,8 +108,8 @@ type previousOwners {
   userName: String
 }
 type priceHistory {
-  price: String
-  date: String
+  price: Float
+  date: DateTime
 }
 type investmentDetails {
   description: String
@@ -164,11 +164,13 @@ extend type Product {
   documents: [documents]
   financials: [financials]
   investmentDetails: investmentDetails
-  priceHistory: [priceHistory]
   propertySaleType: propertySaleType
   previousOwners: [previousOwners]
   upVotes: Int
+  manager: String
+  managerInfo: Account
   area: area
+  priceHistory: [priceHistory]
   productViews: Int
   totalCarts: Int
   ancestorId: ID
@@ -192,6 +194,10 @@ input areaInput {
   price: Float
   value: Float
   availableQuantity: Float
+}
+input priceHistoryInput {
+  price: Float
+  date: DateTime
 }
 
 input investmentDetailsInput {
@@ -227,7 +233,9 @@ extend input ProductInput {
   propertySaleType: propertySaleTypeInput
   location: locationInput
   upVotes: Int
+  manager: String
   area: areaInput
+  priceHistory: [priceHistoryInput]
   documents: [documentsInput]
   financials: [financialsInput]
   planMedia: [planMediaInput]
@@ -242,9 +250,9 @@ extend type CatalogProduct {
   currentOwner: currentOwner
   ownerShip: String
   area: area
+  priceHistory: [priceHistory]
   propertyType: String
   investmentDetails: investmentDetails
-  priceHistory: [priceHistory]
   documents: [documents]
   financials: [financials]
   planMedia: [planMedia]
@@ -254,6 +262,8 @@ extend type CatalogProduct {
   previousOwners: [previousOwners]
   location: location
   upVotes: Int
+  manager: String
+  managerInfo: Account
   ancestorId: ID
   parentId: ID
 }

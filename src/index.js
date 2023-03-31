@@ -349,10 +349,10 @@ function myStartup1(context) {
   });
   const priceHistory = new SimpleSchema({
     price: {
-      type: String,
+      type: Number,
     },
     date: {
-      type: String,
+      type: Date,
     },
   });
   const propertySaleType = new SimpleSchema({
@@ -396,6 +396,7 @@ function myStartup1(context) {
       type: Number,
     },
   });
+
   const planMedia = new SimpleSchema({
     url: {
       type: String,
@@ -455,8 +456,10 @@ function myStartup1(context) {
     financials: [financials],
     planMedia: [planMedia],
     coordinates: coordinates,
-    activeStatus: Boolean,
     area: area,
+    priceHistory: [priceHistory],
+    manager: String,
+    activeStatus: Boolean,
   });
   context.simpleSchemas.CatalogProduct.extend({
     // uploadedBy: OwnerInfo,
@@ -482,6 +485,7 @@ function myStartup1(context) {
     coordinates: coordinates,
     activeStatus: Boolean,
     area: area,
+    priceHistory: [priceHistory],
   });
 }
 // The new myPublishProductToCatalog function parses our products,
@@ -500,6 +504,7 @@ function myPublishProductToCatalog(
   // console.log("check product", catalogProduct, product, collections)
   // catalogProduct.uploadedBy = product.uploadedBy || null;
   // catalogProduct.upVotes = product.upVotes || 0;
+  catalogProduct.manager = product.manager ?? "";
   catalogProduct.currentOwner = product.currentOwner ?? "partOwn";
   catalogProduct.propertyType = product.propertyType || "not specifiend";
   catalogProduct.documents = product?.documents;
@@ -507,6 +512,7 @@ function myPublishProductToCatalog(
   catalogProduct.previousOwners = product.previousOwners ?? [];
   catalogProduct.investmentDetails = product.investmentDetails ?? null;
   catalogProduct.area = product?.area;
+  catalogProduct.area = product?.priceHistory ?? [];
   catalogProduct.propertySaleType = product.propertySaleType ?? "presale";
   catalogProduct.location = product.location ?? null;
   catalogProduct.planMedia = product.planMedia ?? [];
