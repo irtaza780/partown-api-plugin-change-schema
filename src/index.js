@@ -11,10 +11,12 @@ import getUserByUserId from "./utils/getUser.js";
 import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
 import updateUserAccountBook from "./utils/updateUserAccountBook.js";
 import updateUserFulfillmentMethod from "./utils/updateUserFulfillmentMethod.js";
+import CatalogProduct from "./resolvers/CatalogProduct.js";
 
 import encodeOpaqueId from "@reactioncommerce/api-utils/encodeOpaqueId.js";
 var _context = null;
 const resolvers = {
+  CatalogProduct,
   Query: {
     async getMyProperties(parent, args, context, info) {
       try {
@@ -484,6 +486,7 @@ function myStartup1(context) {
     planMedia: [planMedia],
     coordinates: coordinates,
     activeStatus: Boolean,
+    manager: String,
     area: area,
     priceHistory: [priceHistory],
   });
@@ -512,7 +515,7 @@ function myPublishProductToCatalog(
   catalogProduct.previousOwners = product.previousOwners ?? [];
   catalogProduct.investmentDetails = product.investmentDetails ?? null;
   catalogProduct.area = product?.area;
-  catalogProduct.area = product?.priceHistory ?? [];
+  catalogProduct.priceHistory = product?.priceHistory ?? [];
   catalogProduct.propertySaleType = product.propertySaleType ?? "presale";
   catalogProduct.location = product.location ?? null;
   catalogProduct.planMedia = product.planMedia ?? [];

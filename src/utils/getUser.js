@@ -10,16 +10,12 @@
  * @param {Boolean} args.shouldIncludeArchived - Include archived units in results
  * @returns {Promise<Object[]>} Array of Unit Variant objects.
  */
-export default async function getUserByUserId(
-  context,
-   userId
-) {
+export default async function getUserByUserId(context, userId) {
   const { collections } = context;
   const { Accounts } = collections;
   const selector = {
-    "userId":userId
+    userId: userId,
   };
-
 
   return Accounts.findOne(selector);
 }

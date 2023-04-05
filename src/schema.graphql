@@ -166,7 +166,7 @@ extend type Product {
   investmentDetails: investmentDetails
   propertySaleType: propertySaleType
   previousOwners: [previousOwners]
-  upVotes: Int
+  #upVotes: Int
   manager: String
   managerInfo: Account
   area: area
@@ -232,7 +232,7 @@ extend input ProductInput {
   investmentDetails: investmentDetailsInput
   propertySaleType: propertySaleTypeInput
   location: locationInput
-  upVotes: Int
+  #upVotes: Int
   manager: String
   area: areaInput
   priceHistory: [priceHistoryInput]
@@ -261,7 +261,7 @@ extend type CatalogProduct {
   propertySaleType: propertySaleType
   previousOwners: [previousOwners]
   location: location
-  upVotes: Int
+  #upVotes: Int
   manager: String
   managerInfo: Account
   ancestorId: ID
