@@ -142,6 +142,7 @@ type area {
   value: Float
   availableQuantity: Float
 }
+
 type currentOwner {
   userId: String
   userName: String
@@ -166,7 +167,8 @@ extend type Product {
   investmentDetails: investmentDetails
   propertySaleType: propertySaleType
   previousOwners: [previousOwners]
-  #upVotes: Int
+  upVotes: Int
+  downVotes: Int
   manager: String
   managerInfo: Account
   area: area
@@ -261,7 +263,8 @@ extend type CatalogProduct {
   propertySaleType: propertySaleType
   previousOwners: [previousOwners]
   location: location
-  #upVotes: Int
+  upVotes: Int
+  downVotes: Int
   manager: String
   managerInfo: Account
   ancestorId: ID
@@ -281,6 +284,7 @@ input uploadedByinput {
 extend type Account {
   Product: [Product]
   identityVerified: Boolean
+  isBanned: Boolean
   orderFulfillment: [Order]
   AccountBook: [AccountBook]
   AvailableFulfillmentMethods: [AvailableFulfillmentMethod]

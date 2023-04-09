@@ -461,6 +461,8 @@ function myStartup1(context) {
     area: area,
     priceHistory: [priceHistory],
     manager: String,
+    upVotes: Number,
+    downVotes: Number,
     activeStatus: Boolean,
   });
   context.simpleSchemas.CatalogProduct.extend({
@@ -487,6 +489,8 @@ function myStartup1(context) {
     coordinates: coordinates,
     activeStatus: Boolean,
     manager: String,
+    upVotes: Number,
+    downVotes: Number,
     area: area,
     priceHistory: [priceHistory],
   });
@@ -508,6 +512,8 @@ function myPublishProductToCatalog(
   // catalogProduct.uploadedBy = product.uploadedBy || null;
   // catalogProduct.upVotes = product.upVotes || 0;
   catalogProduct.manager = product.manager ?? "";
+  catalogProduct.upVotes = product.upVotes ?? 0;
+  catalogProduct.downVotes = product.downVotes ?? 0;
   catalogProduct.currentOwner = product.currentOwner ?? "partOwn";
   catalogProduct.propertyType = product.propertyType || "not specifiend";
   catalogProduct.documents = product?.documents;
