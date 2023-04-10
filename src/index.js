@@ -461,8 +461,8 @@ function myStartup1(context) {
     area: area,
     priceHistory: [priceHistory],
     manager: String,
-    upVotes: Number,
-    downVotes: Number,
+    upVotes: { type: Number, optional: true },
+    downVotes: { type: Number, optional: true },
     activeStatus: Boolean,
   });
   context.simpleSchemas.CatalogProduct.extend({
@@ -489,8 +489,8 @@ function myStartup1(context) {
     coordinates: coordinates,
     activeStatus: Boolean,
     manager: String,
-    upVotes: Number,
-    downVotes: Number,
+    upVotes: { type: Number, optional: true },
+    downVotes: { type: Number, optional: true },
     area: area,
     priceHistory: [priceHistory],
   });
