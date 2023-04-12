@@ -270,6 +270,41 @@ extend type CatalogProduct {
   ancestorId: ID
   parentId: ID
 }
+
+extend type ImageSizes {
+  unSignedLarge: String
+
+  "Use this URL to get a medium resolution file for this image (unSigned image s3 Bucket)"
+  unSignedMedium: String
+
+  """
+  Use this URL to get this image with its original resolution as uploaded. This may not be
+  the true original size if there is a hard cap on how big image files can be (unSigned image s3 Bucket).
+  """
+  unSignedOriginal: String
+
+  "Use this URL to get a small resolution file for this image (unSigned image s3 Bucket)"
+  unSignedSmall: String
+
+  "Use this URL to get a thumbnail resolution file for this image (unSigned image s3 Bucket)"
+  unSignedThumbnail: String
+}
+
+extend type planMedia {
+  unsignedUrl: String
+}
+
+extend type documents {
+  unsignedUrl: String
+}
+
+extend type poAddress {
+  unsignedUrl: String
+}
+extend type govId {
+  unsignedUrl: String
+}
+
 type uploadedBy {
   name: String
   image: String
@@ -288,4 +323,5 @@ extend type Account {
   orderFulfillment: [Order]
   AccountBook: [AccountBook]
   AvailableFulfillmentMethods: [AvailableFulfillmentMethod]
+  unsignedProfileUrl: String
 }
