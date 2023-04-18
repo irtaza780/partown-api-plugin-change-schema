@@ -211,6 +211,12 @@ const resolvers = {
         if (!authToken || !userId)
           throw new ReactionError("access-denied", "Access denied");
 
+        if (
+          decodeOpaqueId(accountId).id ===
+          decodeOpaqueId(process.env.ADMIN_ID).id
+        )
+          return new Error("Cannot Delete Admin ");
+
         await context.validatePermissions(`reaction:legacy:accounts`, "create");
 
         const decodedUserId = decodeOpaqueId(accountId).id;
