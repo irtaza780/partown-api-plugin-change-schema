@@ -53,7 +53,7 @@ type purchaseOutput {
 }
 extend type Mutation {
   purchaseProperty(productId: String): purchaseOutput
-  deleteAccount(userId: String!): deleteOutput
+  deleteAccount(accountId: ID!): Boolean
   updateUserPassword(input: updatePassword): updatePasswordOutPut
   updateAccountpayBookEntry(input: accountBookInput): AccountBook
   updateAvailableFulfillmentMethodEntry(
@@ -163,6 +163,7 @@ extend type Product {
   ownerShip: String
   propertyType: String
   documents: [documents]
+  ownersList: [String]
   financials: [financials]
   investmentDetails: investmentDetails
   propertySaleType: propertySaleType
@@ -256,6 +257,7 @@ extend type CatalogProduct {
   propertyType: String
   investmentDetails: investmentDetails
   documents: [documents]
+  ownersList: [String]
   financials: [financials]
   planMedia: [planMedia]
   coordinates: coordinates

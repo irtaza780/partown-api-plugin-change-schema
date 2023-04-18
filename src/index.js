@@ -12,6 +12,7 @@ import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
 import updateUserAccountBook from "./utils/updateUserAccountBook.js";
 import updateUserFulfillmentMethod from "./utils/updateUserFulfillmentMethod.js";
 import CatalogProduct from "./resolvers/CatalogProduct.js";
+import ReactionError from "@reactioncommerce/reaction-error";
 
 import encodeOpaqueId from "@reactioncommerce/api-utils/encodeOpaqueId.js";
 var _context = null;
@@ -201,49 +202,38 @@ const resolvers = {
           : [];
       return reaction_response;
     },
-    async deleteAccount(parent, args, context, info) {
+    async deleteAccount(parent, { accountId }, context, info) {
       try {
-        let { userId } = args;
-        let { Products, Accounts, users, Bids, Catalog } = context.collections;
-        console.log("userId", userId);
-        let deletedBids = await Bids.remove({
-          $or: [{ soldBy: userId }, { createdBy: userId }],
+        const { collections, userId, authToken } = context;
+        let { Products, Accounts, users, Trades, Catalog, Transactions } =
+          collections;
+
+        if (!authToken || !userId)
+          throw new ReactionError("access-denied", "Access denied");
+
+        await context.validatePermissions(`reaction:legacy:accounts`, "create");
+
+        const decodedUserId = decodeOpaqueId(accountId).id;
+        let deletedTransactions = await Transactions.remove({
+          transactionBy: decodedUserId,
         });
+        let deletedTrades = await Trades.remove({
+          createdBy: decodedUserId,
+        });
+
         let deletedCatalog = await Catalog.remove({
-          "product.uploadedBy.userId": userId,
+          "product.uploadedBy.userId": decodedUserId,
         });
         let deletedProducts = await Products.remove({
-          "uploadedBy.userId": userId,
+          "uploadedBy.userId": decodedUserId,
         });
-        let deletedUser = await users.remove({ _id: userId });
-        let deletedAccount = await Accounts.remove({ userId });
-        console.log(
-          "deletedBids",
-          deletedBids,
-          deletedCatalog,
-          deletedProducts,
-          deletedUser,
-          deletedAccount
-        );
-        if (deletedUser?.deletedCount > 0 || deletedAccount?.deletedCount > 0)
-          return {
-            success: true,
-            message: "deleted successfully.",
-            status: 200,
-          };
-        else
-          return {
-            success: false,
-            message: "please refresh again!",
-            status: 200,
-          };
+        let deletedUser = await users.remove({ _id: decodedUserId });
+        let deletedAccount = await Accounts.remove({ userId: decodedUserId });
+        console.log("deleted account ", deletedAccount);
+        console.log("deleted User", deletedUser);
+        return deletedAccount?.result?.n > 0 || deletedUser?.result?.n > 0;
       } catch (err) {
-        console.log("error", err);
-        return {
-          success: false,
-          message: "Server Error.",
-          status: 500,
-        };
+        return err;
       }
     },
     async updateUserPassword(parent, args, context, info) {

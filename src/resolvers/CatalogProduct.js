@@ -42,4 +42,16 @@ export default {
       result.find((item) => item._id === "DOWNVOTE")?.count || 0;
     return downVotesCount;
   },
+  async ownersList(parent, args, context, info) {
+    const { Ownership } = context.collections;
+    const result = await Ownership.find({
+      productId: parent?.productId,
+    }).toArray();
+
+    console.log("*************result is*******", result);
+
+    return result?.map((item) => {
+      return item?.ownerId;
+    });
+  },
 };
