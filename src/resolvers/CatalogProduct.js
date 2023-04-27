@@ -2,6 +2,8 @@ import getUserByUserId from "../utils/getUser.js";
 
 import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
 
+import encodeOpaqueId from "@reactioncommerce/api-utils/encodeOpaqueId.js";
+
 export default {
   async managerInfo(parent, args, context, info) {
     console.log("parent is", parent);
@@ -48,10 +50,8 @@ export default {
       productId: parent?.productId,
     }).toArray();
 
-    console.log("*************result is*******", result);
-
     return result?.map((item) => {
-      return item?.ownerId;
+      return encodeOpaqueId("reaction/account", item?.ownerId);
     });
   },
 };
