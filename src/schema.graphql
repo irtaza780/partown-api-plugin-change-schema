@@ -182,6 +182,7 @@ extend type Product {
   planMedia: [planMedia]
   coordinates: coordinates
   activeStatus: Boolean
+  yield: Float
 }
 
 input documentsInput {
@@ -246,6 +247,7 @@ extend input ProductInput {
   activeStatus: Boolean
   ancestorId: ID
   parentId: ID
+  yield: Float
 }
 
 extend type CatalogProduct {
@@ -271,6 +273,7 @@ extend type CatalogProduct {
   managerInfo: Account
   ancestorId: ID
   parentId: ID
+  yield: Float
 }
 
 extend type ImageSizes {

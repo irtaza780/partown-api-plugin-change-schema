@@ -458,6 +458,7 @@ function myStartup1(context) {
     priceHistory: [priceHistory],
     manager: String,
     upVotes: { type: Number, optional: true },
+    yield: { type: Number, optional: true },
     downVotes: { type: Number, optional: true },
     activeStatus: Boolean,
   });
@@ -487,6 +488,7 @@ function myStartup1(context) {
     manager: String,
     upVotes: { type: Number, optional: true },
     downVotes: { type: Number, optional: true },
+    yield: { type: Number, optional: true },
     area: area,
     priceHistory: [priceHistory],
   });
@@ -509,6 +511,7 @@ function myPublishProductToCatalog(
   // catalogProduct.upVotes = product.upVotes || 0;
   catalogProduct.manager = product.manager ?? "";
   catalogProduct.upVotes = product.upVotes ?? 0;
+  catalogProduct.yield = product.yield ?? 0;
   catalogProduct.downVotes = product.downVotes ?? 0;
   catalogProduct.currentOwner = product.currentOwner ?? "partOwn";
   catalogProduct.propertyType = product.propertyType || "not specifiend";
