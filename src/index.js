@@ -205,8 +205,17 @@ const resolvers = {
     async deleteAccount(parent, { accountId }, context, info) {
       try {
         const { collections, userId, authToken } = context;
-        let { Products, Accounts, users, Trades, Catalog, Transactions } =
-          collections;
+        let {
+          Products,
+          Accounts,
+          users,
+          Trades,
+          Catalog,
+          Transactions,
+          Ownership,
+          Votes,
+          Notifications,
+        } = collections;
 
         if (!authToken || !userId)
           throw new ReactionError("access-denied", "Access denied");
@@ -233,6 +242,16 @@ const resolvers = {
         let deletedProducts = await Products.remove({
           "uploadedBy.userId": decodedUserId,
         });
+        let deletedOwnership = await Ownership.remove({
+          ownerId: decodedUserId,
+        });
+        let deletedVotes = await Votes.remove({
+          userId: decodedUserId,
+        });
+        let deletedNotifications = await Notifications.remove({
+          to: decodedUserId,
+        });
+
         let deletedUser = await users.remove({ _id: decodedUserId });
         let deletedAccount = await Accounts.remove({ userId: decodedUserId });
         console.log("deleted account ", deletedAccount);
