@@ -132,6 +132,13 @@ type financials {
   title: String
   value: Float
 }
+type propertyEvents {
+  title: String
+  details: String
+  date: DateTime
+  addedBy: ID
+  addedByInfo: Account
+}
 type propertySaleType {
   "property type"
   type: String
@@ -147,9 +154,11 @@ type currentOwner {
   userId: String
   userName: String
 }
-"floor plans media (2)"
+"floor plans media"
 type planMedia {
+  name: String
   url: String
+  unsignedUrl: String
 }
 "property location coordinates"
 type coordinates {
@@ -165,6 +174,8 @@ extend type Product {
   documents: [documents]
   ownersList: [String]
   financials: [financials]
+  propertyEvents: [propertyEvents]
+  expiryTime: DateTime
   investmentDetails: investmentDetails
   propertySaleType: propertySaleType
   previousOwners: [previousOwners]
@@ -183,6 +194,7 @@ extend type Product {
   coordinates: coordinates
   activeStatus: Boolean
   yield: Float
+  investmentCase: String
 }
 
 input documentsInput {
@@ -191,6 +203,13 @@ input documentsInput {
 input financialsInput {
   title: String
   value: Float
+}
+
+input propertyEventsInput {
+  title: String
+  details: String
+  date: DateTime
+  addedBy: ID
 }
 
 input areaInput {
@@ -223,6 +242,7 @@ input locationInput {
   location: String
 }
 input planMediaInput {
+  name: String
   url: String
 }
 input coordinatesInput {
@@ -236,12 +256,15 @@ extend input ProductInput {
   investmentDetails: investmentDetailsInput
   propertySaleType: propertySaleTypeInput
   location: locationInput
-  #upVotes: Int
+  "investment case of the property"
+  investmentCase: String
   manager: String
   area: areaInput
   priceHistory: [priceHistoryInput]
   documents: [documentsInput]
   financials: [financialsInput]
+  propertyEvents: [propertyEventsInput]
+  expiryTime: DateTime
   planMedia: [planMediaInput]
   coordinates: coordinatesInput
   activeStatus: Boolean
@@ -261,6 +284,8 @@ extend type CatalogProduct {
   documents: [documents]
   ownersList: [String]
   financials: [financials]
+  propertyEvents: [propertyEvents]
+  expiryTime: DateTime
   planMedia: [planMedia]
   coordinates: coordinates
   activeStatus: Boolean
@@ -268,6 +293,7 @@ extend type CatalogProduct {
   previousOwners: [previousOwners]
   location: location
   upVotes: Int
+  investmentCase: String
   downVotes: Int
   manager: String
   managerInfo: Account
@@ -295,9 +321,9 @@ extend type ImageSizes {
   unSignedThumbnail: String
 }
 
-extend type planMedia {
-  unsignedUrl: String
-}
+# extend type planMedia {
+#   unsignedUrl: String
+# }
 
 extend type documents {
   unsignedUrl: String

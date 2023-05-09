@@ -12,12 +12,14 @@ import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
 import updateUserAccountBook from "./utils/updateUserAccountBook.js";
 import updateUserFulfillmentMethod from "./utils/updateUserFulfillmentMethod.js";
 import CatalogProduct from "./resolvers/CatalogProduct.js";
+import propertyEvents from "./resolvers/propertyEvents.js";
 import ReactionError from "@reactioncommerce/reaction-error";
 
 import encodeOpaqueId from "@reactioncommerce/api-utils/encodeOpaqueId.js";
 var _context = null;
 const resolvers = {
   CatalogProduct,
+  propertyEvents,
   Query: {
     async getMyProperties(parent, args, context, info) {
       try {
@@ -415,6 +417,10 @@ function myStartup1(context) {
   });
 
   const planMedia = new SimpleSchema({
+    name: {
+      type: String,
+      optional: true,
+    },
     url: {
       type: String,
       optional: true,
@@ -432,6 +438,21 @@ function myStartup1(context) {
     value: {
       type: Number,
     },
+  });
+  const propertyEvents = new SimpleSchema({
+    title: {
+      type: String,
+      optional: true,
+    },
+    date: {
+      type: Date,
+      optional: true,
+    },
+    details: {
+      type: String,
+      optional: true,
+    },
+    addedBy: { type: String, optional: true },
   });
   const coordinates = new SimpleSchema({
     longitude: {
@@ -471,7 +492,24 @@ function myStartup1(context) {
     location: location,
     documents: [documents],
     financials: [financials],
-    planMedia: [planMedia],
+    expiryTime: {
+      type: Date,
+      optional: true,
+    },
+    propertyEvents: {
+      type: Array,
+      optional: true,
+    },
+    "propertyEvents.$": {
+      type: propertyEvents,
+    },
+    planMedia: {
+      type: Array,
+      optional: true,
+    },
+    "planMedia.$": {
+      type: planMedia,
+    },
     coordinates: coordinates,
     area: area,
     priceHistory: [priceHistory],
@@ -480,6 +518,7 @@ function myStartup1(context) {
     yield: { type: Number, optional: true },
     downVotes: { type: Number, optional: true },
     activeStatus: Boolean,
+    investmentCase: { type: String, optional: true },
   });
   context.simpleSchemas.CatalogProduct.extend({
     // uploadedBy: OwnerInfo,
@@ -501,7 +540,24 @@ function myStartup1(context) {
     location: location,
     documents: [documents],
     financials: [financials],
-    planMedia: [planMedia],
+    expiryTime: {
+      type: Date,
+      optional: true,
+    },
+    propertyEvents: {
+      type: Array,
+      optional: true,
+    },
+    "propertyEvents.$": {
+      type: propertyEvents,
+    },
+    planMedia: {
+      type: Array,
+      optional: true,
+    },
+    "planMedia.$": {
+      type: planMedia,
+    },
     coordinates: coordinates,
     activeStatus: Boolean,
     manager: String,
@@ -510,6 +566,7 @@ function myStartup1(context) {
     yield: { type: Number, optional: true },
     area: area,
     priceHistory: [priceHistory],
+    investmentCase: { type: String, optional: true },
   });
 }
 // The new myPublishProductToCatalog function parses our products,
@@ -528,6 +585,8 @@ function myPublishProductToCatalog(
   // console.log("check product", catalogProduct, product, collections)
   // catalogProduct.uploadedBy = product.uploadedBy || null;
   // catalogProduct.upVotes = product.upVotes || 0;
+
+  catalogProduct.investmentCase = product.investmentCase ?? "";
   catalogProduct.manager = product.manager ?? "";
   catalogProduct.upVotes = product.upVotes ?? 0;
   catalogProduct.yield = product.yield ?? 0;
@@ -536,6 +595,8 @@ function myPublishProductToCatalog(
   catalogProduct.propertyType = product.propertyType || "not specifiend";
   catalogProduct.documents = product?.documents;
   catalogProduct.financials = product?.financials;
+  catalogProduct.propertyEvents = product?.propertyEvents;
+  catalogProduct.expiryTime = product?.expiryTime;
   catalogProduct.previousOwners = product.previousOwners ?? [];
   catalogProduct.investmentDetails = product.investmentDetails ?? null;
   catalogProduct.area = product?.area;
