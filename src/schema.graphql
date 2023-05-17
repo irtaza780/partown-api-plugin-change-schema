@@ -160,6 +160,7 @@ type planMedia {
   url: String
   unsignedUrl: String
 }
+
 "property location coordinates"
 type coordinates {
   latitude: String
@@ -195,6 +196,8 @@ extend type Product {
   activeStatus: Boolean
   yield: Float
   investmentCase: String
+  buyerFee: Float
+  sellerFee: Float
 }
 
 input documentsInput {
@@ -300,6 +303,8 @@ extend type CatalogProduct {
   ancestorId: ID
   parentId: ID
   yield: Float
+  buyerFee: Float
+  sellerFee: Float
 }
 
 extend type ImageSizes {

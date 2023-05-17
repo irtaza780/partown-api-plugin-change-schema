@@ -54,4 +54,20 @@ export default {
       return encodeOpaqueId("reaction/account", item?.ownerId);
     });
   },
+  async buyerFee(parent, args, context, info) {
+    const { ProductRate } = context.collections;
+    let productType = parent.propertySaleType.type;
+    let { buyerFee } = await ProductRate.findOne({
+      productType,
+    });
+    return buyerFee;
+  },
+  async sellerFee(parent, args, context, info) {
+    const { ProductRate } = context.collections;
+    let productType = parent.propertySaleType.type;
+    let { sellerFee } = await ProductRate.findOne({
+      productType,
+    });
+    return sellerFee;
+  },
 };
