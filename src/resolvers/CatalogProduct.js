@@ -70,4 +70,68 @@ export default {
     });
     return sellerFee;
   },
+  async remainingQuantity(parent, args, context, info) {
+    let { collections, userId, authToken } = context;
+    const productId = parent?._id;
+    let decodedProductId = decodeOpaqueId(productId).id;
+
+    let { Trades, Catalog } = collections;
+    let { product } = await Catalog.findOne({
+      "product._id": decodedProductId,
+    });
+    let sum = [];
+    if (!userId) {
+      sum = await Trades.aggregate([
+        {
+          $match: {
+            productId: decodedProductId,
+            tradeType: "offer",
+            completionStatus: { $ne: "completed" },
+            isCancelled: { $ne: true },
+          },
+        },
+        {
+          $group: {
+            _id: "$productId",
+            totalUnits: { $sum: "$area" },
+            totalOriginal: { $sum: "$originalQuantity" },
+          },
+        },
+      ]).toArray();
+    } else {
+      sum = await Trades.aggregate([
+        {
+          $match: {
+            productId: decodedProductId,
+            tradeType: "offer",
+          },
+        },
+        {
+          $match: {
+            sellerId: { $ne: userId },
+            completionStatus: { $ne: "completed" },
+            isCancelled: { $ne: true },
+          },
+        },
+        {
+          $group: {
+            _id: "$productId",
+            totalUnits: { $sum: "$area" },
+            totalOriginal: { $sum: "$originalQuantity" },
+          },
+        },
+      ]).toArray();
+    }
+
+    if (sum.length === 0) {
+      return 0;
+    }
+
+    let percentage = (
+      (sum[0]?.totalUnits / product?.area?.value) *
+      100
+    ).toFixed(2);
+
+    return percentage;
+  },
 };

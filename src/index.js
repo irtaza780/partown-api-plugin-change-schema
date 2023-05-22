@@ -427,6 +427,9 @@ function myStartup1(context) {
     },
   });
   const documents = new SimpleSchema({
+    name: {
+      type: String,
+    },
     url: {
       type: String,
     },

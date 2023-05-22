@@ -126,6 +126,7 @@ type location {
   location: String
 }
 type documents {
+  name: String
   url: String
 }
 type financials {
@@ -198,9 +199,11 @@ extend type Product {
   investmentCase: String
   buyerFee: Float
   sellerFee: Float
+  remainingQuantity: Float
 }
 
 input documentsInput {
+  name: String
   url: String
 }
 input financialsInput {
@@ -305,6 +308,7 @@ extend type CatalogProduct {
   yield: Float
   buyerFee: Float
   sellerFee: Float
+  remainingQuantity: Float
 }
 
 extend type ImageSizes {
