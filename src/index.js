@@ -429,9 +429,11 @@ function myStartup1(context) {
   const documents = new SimpleSchema({
     name: {
       type: String,
+      optional: true,
     },
     url: {
       type: String,
+      optional: true,
     },
   });
   const financials = new SimpleSchema({
