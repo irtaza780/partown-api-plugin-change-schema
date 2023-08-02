@@ -117,10 +117,22 @@ export default {
         "product._id": productId,
       },
       {
-        $set: { "product.remainingQuantity": percentage },
+        $set: { remainingQuantity: parseFloat(percentage) },
       }
     );
 
     return percentage;
   },
+
+  // async remainingQuantity(parent, args, context, info) {
+  //   const { Catalog } = context.collections;
+  //   console.log("parent is ", parent);
+  //   const product = await Catalog.findOne({
+  //     "product._id": parent._id,
+  //   });
+
+  //   console.log("product from remaning quantity resolver", product);
+
+  //   return product ? product?.product?.remainingQuantity : 0;
+  // },
 };
