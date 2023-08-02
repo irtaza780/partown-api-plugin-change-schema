@@ -71,66 +71,55 @@ export default {
     return sellerFee;
   },
   async remainingQuantity(parent, args, context, info) {
-    let { collections, userId, authToken } = context;
-    const productId = parent?._id;
-    let decodedProductId = decodeOpaqueId(productId).id;
+    const { collections, userId } = context;
+    const productId = decodeOpaqueId(parent?._id).id;
 
-    let { Trades, Catalog } = collections;
-    let { product } = await Catalog.findOne({
-      "product._id": decodedProductId,
+    const { Trades, Catalog } = collections;
+    const { product } = await Catalog.findOne({
+      "product._id": productId,
     });
-    let sum = [];
-    if (!userId) {
-      sum = await Trades.aggregate([
-        {
-          $match: {
-            productId: decodedProductId,
-            tradeType: "offer",
-            completionStatus: { $ne: "completed" },
-            isCancelled: { $ne: true },
-          },
+
+    let matchStage = {
+      productId: productId,
+      tradeType: "offer",
+      completionStatus: { $ne: "completed" },
+      isCancelled: { $ne: true },
+    };
+
+    // if (userId) {
+    //   matchStage.sellerId = { $ne: userId };
+    // }
+
+    const pipeline = [
+      { $match: matchStage },
+      {
+        $group: {
+          _id: "$productId",
+          totalUnits: { $sum: "$area" },
+          totalOriginal: { $sum: "$originalQuantity" },
         },
-        {
-          $group: {
-            _id: "$productId",
-            totalUnits: { $sum: "$area" },
-            totalOriginal: { $sum: "$originalQuantity" },
-          },
-        },
-      ]).toArray();
-    } else {
-      sum = await Trades.aggregate([
-        {
-          $match: {
-            productId: decodedProductId,
-            tradeType: "offer",
-          },
-        },
-        {
-          $match: {
-            sellerId: { $ne: userId },
-            completionStatus: { $ne: "completed" },
-            isCancelled: { $ne: true },
-          },
-        },
-        {
-          $group: {
-            _id: "$productId",
-            totalUnits: { $sum: "$area" },
-            totalOriginal: { $sum: "$originalQuantity" },
-          },
-        },
-      ]).toArray();
-    }
+      },
+    ];
+
+    const sum = await Trades.aggregate(pipeline).toArray();
 
     if (sum.length === 0) {
       return 0;
     }
 
-    let percentage = (
+    const percentage = (
       (sum[0]?.totalUnits / product?.area?.value) *
       100
     ).toFixed(2);
+
+    await Catalog.updateOne(
+      {
+        "product._id": productId,
+      },
+      {
+        $set: { "product.remainingQuantity": percentage },
+      }
+    );
 
     return percentage;
   },
