@@ -183,6 +183,7 @@ extend type Product {
   previousOwners: [previousOwners]
   upVotes: Int
   downVotes: Int
+  viewerVote: VoteTypeEnum
   manager: String
   managerInfo: Account
   area: area
@@ -299,8 +300,10 @@ extend type CatalogProduct {
   previousOwners: [previousOwners]
   location: location
   upVotes: Int
-  investmentCase: String
   downVotes: Int
+  viewerVote: VoteTypeEnum
+  
+  investmentCase: String
   manager: String
   managerInfo: Account
   ancestorId: ID

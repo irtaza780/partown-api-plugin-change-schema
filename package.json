@@ -1,7 +1,7 @@
 {
   "name": "@partown/partown-api-plugin-change-schema",
   "description": "Boilerplate Example plugin for the Reaction API",
-  "version": "15.15.2",
+  "version": "15.16.2",
   "main": "index.js",
   "type": "module",
   "engines": {

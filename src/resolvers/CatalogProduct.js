@@ -44,6 +44,21 @@ export default {
       result.find((item) => item._id === "DOWNVOTE")?.count || 0;
     return downVotesCount;
   },
+  async viewerVote(parent, args, context, info) {
+    const { userId, collections } = context;
+    const { Catalog, Votes } = collections;
+    const { productId } = parent;
+    const voteType = await Votes.findOne({ productId, userId });
+    console.log("vote type is ", voteType);
+
+    if (!voteType) {
+      return "NONE";
+    }
+    if (voteType) {
+      return voteType.voteType;
+    }
+  },
+
   async ownersList(parent, args, context, info) {
     const { Ownership } = context.collections;
     const result = await Ownership.find({
