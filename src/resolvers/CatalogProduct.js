@@ -58,6 +58,23 @@ export default {
       return voteType.voteType;
     }
   },
+  async votersList(parent, args, context, info) {
+    const { collections } = context;
+    const productId = parent?._id;
+    const { Votes } = collections;
+    const votes = await Votes.find({
+      productId,
+      voteType: { $ne: "NONE" },
+    }).toArray();
+    console.log("votes are ", votes);
+
+    return votes.map((item) => {
+      return {
+        _id: encodeOpaqueId("reaction/account", item?.userId),
+        voteType: item?.voteType,
+      };
+    });
+  },
 
   async ownersList(parent, args, context, info) {
     const { Ownership } = context.collections;

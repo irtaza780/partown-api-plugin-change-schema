@@ -280,6 +280,11 @@ extend input ProductInput {
   yield: Float
 }
 
+type VotersList {
+  _id: String
+  voteType: VoteTypeEnum
+}
+
 extend type CatalogProduct {
   "uploadedBy: uploadedBy"
   currentOwner: currentOwner
@@ -302,7 +307,8 @@ extend type CatalogProduct {
   upVotes: Int
   downVotes: Int
   viewerVote: VoteTypeEnum
-  
+  votersList: [VotersList]
+
   investmentCase: String
   manager: String
   managerInfo: Account
