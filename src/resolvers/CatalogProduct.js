@@ -116,6 +116,8 @@ export default {
       tradeType: "offer",
       completionStatus: { $ne: "completed" },
       isCancelled: { $ne: true },
+      expirationTime: { $gt: new Date() },
+      area: { $ne: 0 },
     };
 
     // if (userId) {
@@ -135,14 +137,16 @@ export default {
 
     const sum = await Trades.aggregate(pipeline).toArray();
 
+    let percentage;
     if (sum.length === 0) {
-      return 0;
+      percentage = 0;
+    } else {
+      percentage = ((sum[0]?.totalUnits / product?.area?.value) * 100).toFixed(
+        2
+      );
     }
 
-    const percentage = (
-      (sum[0]?.totalUnits / product?.area?.value) *
-      100
-    ).toFixed(2);
+    console.log("percentage value is ", percentage);
 
     await Catalog.updateOne(
       {
